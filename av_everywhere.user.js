@@ -17,7 +17,7 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.0
+// @version     1.01
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -108,13 +108,33 @@ function getImage(responseDetails) {
 function dmmWorker() {
     var obj;
     var keyCount=1;
+    var urlList=[
+        'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=saleranking_asc/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=bookmark_desc/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=ranking/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=review_rank/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/list/=/sort=date/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=weekly/page=1/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=weekly/page=2/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=weekly/page=3/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=weekly/page=4/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=weekly/page=5/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=1/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=2/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=3/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=4/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=5/'
+        ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=daily/'
+    ];
     for(var key of Object.keys(keywordObj)){
         if(simplized(document.title).includes(key)){
+            debug(keywordObj[key])
             obj=new ObjectRequest(keywordObj[key]);
             break;
         }
         else if(keyCount==Object.keys(keywordObj).length){
-            obj=new ObjectRequest('https://www.dmm.co.jp/digital/videoa/-/list/=/sort=date/');
+            var rndNum=Math.floor(Math.random() * (parseInt(urlList.length-1) - 0));
+            obj=new ObjectRequest(urlList[rndNum]);
         }
         keyCount++;
     }
@@ -124,15 +144,25 @@ function dmmWorker() {
 }
 function getAV(responseDetails) {
     var dom = new DOMParser().parseFromString(responseDetails.responseText, "text/html");
-    var container=dom.querySelector('#list');
-    var avList=container.querySelectorAll('li');
+    var avList;
+    if(!responseDetails.finalUrl.includes('ranking')){
+        var container=dom.querySelector('#list');
+        avList=container.querySelectorAll('li');
+
+    }
+    else {
+        avList=dom.querySelectorAll('td.bd-b');
+
+    }
     debug('avList.length: '+avList.length);
     var avCount=1;
     for(var av of avList){
         var rndNum=Math.floor(Math.random() * (parseInt(avList.length-1) - 0));
-        var rate=avList[rndNum].querySelector('p.rate').textContent;
-        debug('p.rate: '+rate)
-        if((rate!='-'&&parseInt(rate)>=4)||avCount==avList.length){
+        var rate;
+        if(!responseDetails.finalUrl.includes('ranking')){
+            rate=avList[rndNum].querySelector('p.rate').textContent;
+        }
+        if((rate!='-'&&parseInt(rate)>=4)||(rate==undefined&&avList[rndNum]!=null)||avCount==avList.length){
             var link=document.createElement("link");
             link.innerHTML=`<link rel="stylesheet" type="text/css" href="https://digstatic.dmm.com/css/list.css?1544680619">`;
             var head=document.querySelector("head");
@@ -153,10 +183,8 @@ function getAV(responseDetails) {
 </style>
 `;
             head.insertAdjacentHTML('beforeend',styleHtml);
-            //div.firstChild.style.backgroundColor='green';
             div.firstChild.className='blinking';
             break;
-
         }
         avCount++;
     }
@@ -1978,7 +2006,10 @@ function CreateButton(text,func,positionBtm){
                 //div.lastChild.style.display='none';
                 btn.className='';
                 for(var element of div.childNodes) {
-                    element.style.display = 'none';
+                    if(element.tagName.toLowerCase()!='button'){
+                        element.style.display = 'none';
+
+                    }
                 }
             }
 
