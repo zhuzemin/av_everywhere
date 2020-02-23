@@ -17,7 +17,7 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.01
+// @version     1.02
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -126,15 +126,19 @@ function dmmWorker() {
         ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=monthly/page=5/'
         ,'https://www.dmm.co.jp/digital/videoa/-/ranking/=/term=daily/'
     ];
+    mainLoop:
     for(var key of Object.keys(keywordObj)){
-        if(simplized(document.title).includes(key)){
-            debug(keywordObj[key])
-            obj=new ObjectRequest(keywordObj[key]);
-            break;
-        }
-        else if(keyCount==Object.keys(keywordObj).length){
-            var rndNum=Math.floor(Math.random() * (parseInt(urlList.length-1) - 0));
-            obj=new ObjectRequest(urlList[rndNum]);
+        for(var subKey of key.split(/\/|,|・/)){
+            if(simplized(document.title).toLowerCase().includes(subKey.trim().toLowerCase())){
+                debug(keywordObj[key])
+                obj=new ObjectRequest(keywordObj[key]);
+                break mainLoop;
+            }
+            else if(keyCount==Object.keys(keywordObj).length){
+                var rndNum=Math.floor(Math.random() * (parseInt(urlList.length-1) - 0));
+                obj=new ObjectRequest(urlList[rndNum]);
+            }
+
         }
         keyCount++;
     }
