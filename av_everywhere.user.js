@@ -17,7 +17,7 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.1
+// @version     1.11
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -28,6 +28,16 @@
 // @license     CC Attribution-ShareAlike 4.0 International; http://creativecommons.org/licenses/by-sa/4.0/
 // @connect-src www.dmm.co.jp
 // @connect-src danbooru.donmai.us
+// @connect-src www.pornhub.com
+// @connect-src nyahentai.org
+// @connect-src zh.nyahentai4.com
+// @connect-src ja.nyahentai.org
+// @connect-src zh.nyahentai.pro
+// @connect-src ja.nyahentai.net
+// @connect-src zh.nyahentai.co
+// @connect-src en.nyahentai3.com
+// @connect-src nhentai.net
+
 // ==/UserScript==
 var config = {
     'debug':false
