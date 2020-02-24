@@ -17,7 +17,7 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.11
+// @version     1.12
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -81,15 +81,15 @@ var init = function () {
 
         }
         danbooru_keywordObj = GM_getValue('danbooru_keywordObj') || null;
-        //current length 800
-        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<800) {
+        //current length 666
+        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<600) {
             danbooru_keywordObj = {};
             create_danbooru_keywordObj();
 
         }
         pornhub_keywordObj = GM_getValue('pornhub_keywordObj') || null;
-        //current length 1350
-        if (pornhub_keywordObj == null||Object.keys(pornhub_keywordObj).length<1300) {
+        //current length 347
+        if (pornhub_keywordObj == null||Object.keys(pornhub_keywordObj).length<300) {
             pornhub_keywordObj = {};
             create_pornhub_keywordObj();
 
@@ -114,6 +114,30 @@ var init = function () {
         danbooruWorker();
         pornhubWorker();
         nhentaiWorker();
+        var interval=setInterval(function () {
+            if(div!=undefined) {
+                debug('div.childNodes.length: '+div.childNodes.length)
+                if (div.childNodes.length >=4) {
+                    var styleHtml = `
+<style type="text/css">.blinking{
+    animation:blinkingText 1.2s infinite;
+}
+@keyframes blinkingText{
+    0%{     background-color: #000;    }
+    49%{    background-color: #000; }
+    60%{    background-color: transparent; }
+    99%{    background-color:transparent;  }
+    100%{   background-color: #000;    }
+}
+</style>
+`;
+                    var head=document.querySelector("head");
+                    head.insertAdjacentHTML('beforeend', styleHtml);
+                    div.firstChild.className = 'blinking';
+                    clearInterval(interval);
+                }
+            }
+        },4000);
     }
 }
 function create_nhentai_keywordObj() {
@@ -6415,7 +6439,7 @@ function create_pornhub_keywordObj(){
     debug('pornhub_keywordObj: '+JSON.stringify(pornhub_keywordObj));
 
 }
-function pornhubWorker() {
+function pornhubWorker(headers=null) {
     var obj;
     var urlList=[
         'https://www.pornhub.com/video?p=homemade&o=tr'
@@ -6437,6 +6461,9 @@ function pornhubWorker() {
                 }
             keyCount++;
         }
+        if(headers!=null){
+            obj.headers=headers;
+        }
     request(obj,getPornVid);
 
 }
@@ -6444,6 +6471,18 @@ function getPornVid(responseDetails) {
     var dom = new DOMParser().parseFromString(responseDetails.responseText, "text/html");
     var liList=dom.querySelectorAll('li[data-entrycode="VidPg-premVid"]');
     debug('liList.length: '+liList.length);
+    if(liList.length==0){
+var script=dom.querySelector('script').innerText;
+var cookie=eval(script.replace('; path=/','').replace('document.cookie','var cookie').replace('document.location.reload(true);','return cookie')+'\ngo();');
+debug('cookie: '+cookie);
+var headers={
+    'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
+    'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
+    'Cookie':cookie
+};
+        pornhubWorker(headers);
+        return;
+    }
     for(var li of liList){
         var rndNum=Math.floor(Math.random() * (parseInt(liList.length-1) - 0));
         var rate=liList[rndNum].querySelector('div.rating-container.neutral');
@@ -7385,12 +7424,6 @@ function dmmWorker() {
 }
 function getAV(responseDetails) {
     var dom = new DOMParser().parseFromString(responseDetails.responseText, "text/html");
-    if(responseDetails.responseText.length<2000){
-        var script=dom.querySelector('script');
-        eval(script+'\ngo();');
-        pornhubWorker();
-        return;
-    }
     var avList;
     if(!responseDetails.finalUrl.includes('/ranking/')){
         var container=dom.querySelector('#list');
@@ -7419,21 +7452,7 @@ function getAV(responseDetails) {
                 a.href=a.href.replace(getLocation(window.location.href).hostname,'www.dmm.co.jp')
             }
             div.insertBefore(avList[rndNum],null);
-            var styleHtml=`
-<style type="text/css">.blinking{
-    animation:blinkingText 1.2s infinite;
-}
-@keyframes blinkingText{
-    0%{     background-color: #000;    }
-    49%{    background-color: #000; }
-    60%{    background-color: transparent; }
-    99%{    background-color:transparent;  }
-    100%{   background-color: #000;    }
-}
-</style>
-`;
-            head.insertAdjacentHTML('beforeend',styleHtml);
-            div.firstChild.className='blinking';
+
             break;
         }
         avCount++;
