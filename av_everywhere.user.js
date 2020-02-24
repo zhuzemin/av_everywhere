@@ -17,7 +17,7 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.12
+// @version     1.13
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -28,7 +28,7 @@
 // @license     CC Attribution-ShareAlike 4.0 International; http://creativecommons.org/licenses/by-sa/4.0/
 // @connect-src www.dmm.co.jp
 // @connect-src danbooru.donmai.us
-// @connect-src www.pornhub.com
+// @connect-src pornhub.com
 // @connect-src nyahentai.org
 // @connect-src zh.nyahentai4.com
 // @connect-src ja.nyahentai.org
@@ -61,7 +61,8 @@ class ObjectRequest{
         this.responseType='text/html';
         this.headers = {
                 'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
-                'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Accept-Language': 'en,en-US;q=0.8,ja;q=0.6,zh-CN;q=0.4,zh;q=0.3'
                 //'Accept': 'application/atom+xml,application/xml,text/xml',
                 //'Referer': window.location.href,
             };
@@ -6488,7 +6489,7 @@ var headers={
         var rate=liList[rndNum].querySelector('div.rating-container.neutral');
         if(rate.textContent!=null){
             if(/(\d*)%/.test(rate.textContent)){
-                if(parseInt(rate.textContent.match(/(\d*)%/)[1])>=80) {
+                if(parseInt(rate.textContent.match(/(\d*)%/)[1])>=70) {
                     debug('rate.textContent: '+rate.textContent);
                     liList[rndNum].style = 'background-color:#D8E0E0;width:160px;border: 3px solid green;text-align: center;display:none;';
                     for (var a of liList[rndNum].querySelectorAll('a')) {
