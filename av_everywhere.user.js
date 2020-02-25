@@ -18,7 +18,7 @@
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
 // @exclude     *://*.webm
-// @version     1.16
+// @version     1.17
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -38,6 +38,7 @@
 // @connect-src zh.nyahentai.co
 // @connect-src en.nyahentai3.com
 // @connect-src nhentai.net
+// @connect-src www.coolinet.net
 
 // ==/UserScript==
 var config = {
@@ -115,10 +116,11 @@ var init = function () {
         danbooruWorker();
         pornhubWorker();
         nhentaiWorker();
+        coolinetWorker();
         var interval=setInterval(function () {
             if(div!=undefined) {
                 debug('div.childNodes.length: '+div.childNodes.length)
-                if (div.childNodes.length >=4) {
+                if (div.childNodes.length >=5) {
                     var styleHtml = `
 <style type="text/css">.blinking{
     animation:blinkingText 1.2s infinite;
@@ -139,6 +141,28 @@ var init = function () {
                 }
             }
         },4000);
+    }
+}
+function coolinetWorker() {
+    var rndNum=Math.floor(Math.random() * (parseInt(2871+DaysBetween(new Date(2020, 2, 26),new Date())-1) - 0));
+    obj=new ObjectRequest('https://www.coolinet.net/page/'+rndNum);
+    request(obj,getOnlineAV);
+
+
+}
+function getOnlineAV(responseDetails) {
+    var dom = new DOMParser().parseFromString(responseDetails.responseText, "text/html");
+    var divList=dom.querySelectorAll('div.videoPost');
+    var divCount=1;
+    for (var i=1;i<= divList.length;i++){
+        var rndNum=Math.floor(Math.random() * (parseInt(divList.length-1) - 0));
+        var id=divList[rndNum].getAttribute('id');
+        var rate=divList[rndNum].querySelector('a.heartLink').textContent.match(/(\d*)/)[1];
+        if(id!='post-55934'&&rate>0){
+            divList[rndNum].style = 'background-color:#D8E0E0;width:200px;border: 3px solid green;text-align: center;display:none;';
+            div.insertBefore(divList[rndNum], null);
+            break;
+        }
     }
 }
 function create_nhentai_keywordObj() {
@@ -6449,18 +6473,18 @@ function create_pornhub_keywordObj(){
 function pornhubWorker(headers=null) {
     var obj;
     var urlList=[
-        'https://www.pornhub.com/video?p=homemade&o=tr?page=1'
-        ,'https://www.pornhub.com/video?p=homemade&o=tr?page=2'
-        ,'https://www.pornhub.com/video?p=homemade&o=tr?page=3'
-        ,'https://www.pornhub.com/video?o=tr?page=1'
-        ,'https://www.pornhub.com/video?o=tr?page=2'
-        ,'https://www.pornhub.com/video?o=tr?page=3'
-        ,'https://www.pornhub.com/video?o=mv&cc=us?page=1'
-        ,'https://www.pornhub.com/video?o=mv&cc=us?page=2'
-        ,'https://www.pornhub.com/video?o=mv&cc=us?page=3'
-        ,'https://www.pornhub.com/video?o=ht&cc=us?page=1'
-        ,'https://www.pornhub.com/video?o=ht&cc=us?page=2'
-        ,'https://www.pornhub.com/video?o=ht&cc=us?page=3'
+        'https://www.pornhub.com/video?p=homemade&o=tr&page=1'
+        ,'https://www.pornhub.com/video?p=homemade&o=tr&page=2'
+        ,'https://www.pornhub.com/video?p=homemade&o=tr&page=3'
+        ,'https://www.pornhub.com/video?o=tr&page=1'
+        ,'https://www.pornhub.com/video?o=tr&page=2'
+        ,'https://www.pornhub.com/video?o=tr&page=3'
+        ,'https://www.pornhub.com/video?o=mv&cc=us&page=1'
+        ,'https://www.pornhub.com/video?o=mv&cc=us&page=2'
+        ,'https://www.pornhub.com/video?o=mv&cc=us&page=3'
+        ,'https://www.pornhub.com/video?o=ht&cc=us&page=1'
+        ,'https://www.pornhub.com/video?o=ht&cc=us&page=2'
+        ,'https://www.pornhub.com/video?o=ht&cc=us&page=3'
         ,'https://www.pornhub.com/recommended?page=1'
         ,'https://www.pornhub.com/recommended?page=2'
         ,'https://www.pornhub.com/recommended?page=3'
@@ -6513,7 +6537,7 @@ var headers={
                         a.href = a.href.replace(getLocation(window.location.href).hostname, 'www.pornhub.com');
                     }
                     var img=liList[rndNum].querySelector('img');
-                    img.setAttribute('src',img.getAttribute('data-mediumthumb'));
+                    img.setAttribute('src',img.getAttribute('data-thumb_url'));
                     liList[rndNum].querySelector('div.wrap').className='';
                     div.insertBefore(liList[rndNum], null);
                     break;
@@ -9988,4 +10012,16 @@ function simplized(cc,mode="t2s") {
 
     }
     return str
+}
+
+function DaysBetween(StartDate, EndDate) {
+    // The number of milliseconds in all UTC days (no DST)
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    // A day in UTC always lasts 24 hours (unlike in other time formats)
+    const start = Date.UTC(EndDate.getFullYear(), EndDate.getMonth()+1, EndDate.getDate());
+    const end = Date.UTC(StartDate.getFullYear(), StartDate.getMonth(), StartDate.getDate());
+
+    // so it's safe to divide by 24 hours
+    return (start - end) / oneDay;
 }
