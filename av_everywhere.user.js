@@ -18,7 +18,7 @@
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
 // @exclude     *://*.webm
-// @version     1.15
+// @version     1.16
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -6449,11 +6449,22 @@ function create_pornhub_keywordObj(){
 function pornhubWorker(headers=null) {
     var obj;
     var urlList=[
-        'https://www.pornhub.com/video?p=homemade&o=tr'
-        ,'https://www.pornhub.com/video?o=tr'
-        ,'https://www.pornhub.com/video?o=mv&cc=us'
-        ,'https://www.pornhub.com/video?o=ht&cc=us'
-        ,'https://www.pornhub.com/recommended'
+        'https://www.pornhub.com/video?p=homemade&o=tr?page=1'
+        ,'https://www.pornhub.com/video?p=homemade&o=tr?page=2'
+        ,'https://www.pornhub.com/video?p=homemade&o=tr?page=3'
+        ,'https://www.pornhub.com/video?o=tr?page=1'
+        ,'https://www.pornhub.com/video?o=tr?page=2'
+        ,'https://www.pornhub.com/video?o=tr?page=3'
+        ,'https://www.pornhub.com/video?o=mv&cc=us?page=1'
+        ,'https://www.pornhub.com/video?o=mv&cc=us?page=2'
+        ,'https://www.pornhub.com/video?o=mv&cc=us?page=3'
+        ,'https://www.pornhub.com/video?o=ht&cc=us?page=1'
+        ,'https://www.pornhub.com/video?o=ht&cc=us?page=2'
+        ,'https://www.pornhub.com/video?o=ht&cc=us?page=3'
+        ,'https://www.pornhub.com/recommended?page=1'
+        ,'https://www.pornhub.com/recommended?page=2'
+        ,'https://www.pornhub.com/recommended?page=3'
+        ,'https://www.pornhub.com/recommended/rate'
     ];
     var keyCount=1;
         for(var key of Object.keys(pornhub_keywordObj)){
@@ -6502,7 +6513,7 @@ var headers={
                         a.href = a.href.replace(getLocation(window.location.href).hostname, 'www.pornhub.com');
                     }
                     var img=liList[rndNum].querySelector('img');
-                    img.setAttribute('src',img.getAttribute('data-src'));
+                    img.setAttribute('src',img.getAttribute('data-mediumthumb'));
                     liList[rndNum].querySelector('div.wrap').className='';
                     div.insertBefore(liList[rndNum], null);
                     break;
