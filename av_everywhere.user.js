@@ -18,7 +18,7 @@
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
 // @exclude     *://*.webm
-// @version     1.14
+// @version     1.15
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -83,7 +83,7 @@ var init = function () {
         }
         danbooru_keywordObj = GM_getValue('danbooru_keywordObj') || null;
         //current length 666
-        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<600) {
+        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<600||Object.keys(danbooru_keywordObj)[4].includes('_')) {
             danbooru_keywordObj = {};
             create_danbooru_keywordObj();
 
@@ -706,7 +706,7 @@ function getManga(responseDetails){
     div.insertBefore(divList[rndNum], null);
 }
 function create_pornhub_keywordObj(){
-    var porbhun_tag_en=`
+    var pornhub_tag_en=`
     <ul id="categoriesListSection" class="categories-list videos row-4-thumbs js-mxpParent" data-mxp="Category Index">
 									<li class="cat_pic alpha" data-category="111">
 					<div class="category-wrapper ">
@@ -2138,7 +2138,7 @@ function create_pornhub_keywordObj(){
 						</ul>
     `;
 
-    var porbhun_tag_ja=`
+    var pornhub_tag_ja=`
     <ul id="categoriesListSection" class="categories-list videos row-4-thumbs js-mxpParent" data-mxp="Category Index">
 									<li class="cat_pic alpha" data-category="36">
 					<div class="category-wrapper ">
@@ -3570,7 +3570,7 @@ function create_pornhub_keywordObj(){
 						</ul>
 `;
 
-    var porbhun_tag_cn=`
+    var pornhub_tag_cn=`
     <ul id="categoriesListSection" class="categories-list videos row-4-thumbs js-mxpParent" data-mxp="Category Index">
 									<li class="cat_pic alpha" data-category="36">
 					<div class="category-wrapper ">
@@ -5002,7 +5002,7 @@ function create_pornhub_keywordObj(){
 						</ul>
 `;
 
-    var porbhun_tag_tw=`
+    var pornhub_tag_tw=`
 <ul id="categoriesListSection" class="categories-list videos row-4-thumbs js-mxpParent" data-mxp="Category Index">
 									<li class="cat_pic alpha" data-category="36">
 					<div class="category-wrapper ">
@@ -6434,7 +6434,7 @@ function create_pornhub_keywordObj(){
 						</ul>
 
 `;
-    for(var str of [porbhun_tag_en,porbhun_tag_ja,porbhun_tag_cn,porbhun_tag_tw]){
+    for(var str of [pornhub_tag_en,pornhub_tag_ja,pornhub_tag_cn,pornhub_tag_tw]){
         var dom = new DOMParser().parseFromString(str, "text/html");
         for(var a of dom.querySelectorAll('a.js-mxp')){
             var key=a.getAttribute('data-mxptext');
@@ -7334,7 +7334,7 @@ looking_at_viewer
     for(var str of [danbooru_tag_en,danbooru_tag_cn,danbooru_tag_tw,danbooru_tag_ja]){
         var arr=str.split(/\n/);
         for(var i=0;i<arr.length;i++){
-            var key=arr[i];
+            var key=arr[i].replace('_',' ');
             var value=danbooru_tag_en_arr[i];
             if(key.trim().length>0){
                 danbooru_keywordObj[key]=value;
@@ -7425,14 +7425,7 @@ function dmmWorker() {
         }
         keyCount++;
     }
-    var headers = {
-        'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'Accept-Language': 'en,en-US;q=0.8,ja;q=0.6,zh-CN;q=0.4,zh;q=0.3'
-        //'Accept': 'application/atom+xml,application/xml,text/xml',
-        //'Referer': window.location.href,
-    };
-    obj.headers=headers;
+    obj.headers['Accept-Language']='en,en-US;q=0.8,ja;q=0.6,zh-CN;q=0.4,zh;q=0.3';
     request(obj,getAV);
 
 
