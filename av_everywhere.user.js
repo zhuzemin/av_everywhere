@@ -17,7 +17,8 @@
 // @exclude     *://*.mp4
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
-// @version     1.13
+// @exclude     *://*.webm
+// @version     1.14
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -60,9 +61,8 @@ class ObjectRequest{
         this.data=null;
         this.responseType='text/html';
         this.headers = {
-                'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                'Accept-Language': 'en,en-US;q=0.8,ja;q=0.6,zh-CN;q=0.4,zh;q=0.3'
+                //'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                 //'Accept': 'application/atom+xml,application/xml,text/xml',
                 //'Referer': window.location.href,
             };
@@ -665,12 +665,18 @@ function nhentaiWorker() {
         'https://nyahentai.org/rank/day/page/1'
         ,'https://nyahentai.org/rank/day/page/2'
         ,'https://nyahentai.org/rank/day/page/3'
+        ,'https://nyahentai.org/rank/day/page/4'
+        ,'https://nyahentai.org/rank/day/page/5'
         ,'https://nyahentai.org/rank/week/page/1'
         ,'https://nyahentai.org/rank/week/page/2'
         ,'https://nyahentai.org/rank/week/page/3'
+        ,'https://nyahentai.org/rank/week/page/4'
+        ,'https://nyahentai.org/rank/week/page/5'
         ,'https://nyahentai.org/rank/month/page/1'
         ,'https://nyahentai.org/rank/month/page/2'
         ,'https://nyahentai.org/rank/month/page/3'
+        ,'https://nyahentai.org/rank/month/page/4'
+        ,'https://nyahentai.org/rank/month/page/5'
     ];
     var keyCount=1;
     for(var key of Object.keys(nhentai_keywordObj)){
@@ -6477,7 +6483,7 @@ var script=dom.querySelector('script').innerText;
 var cookie=eval(script.replace('; path=/','').replace('document.cookie','var cookie').replace('document.location.reload(true);','return cookie')+'\ngo();');
 debug('cookie: '+cookie);
 var headers={
-    'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
+    //'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
     'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
     'Cookie':cookie
 };
@@ -7419,6 +7425,14 @@ function dmmWorker() {
         }
         keyCount++;
     }
+    var headers = {
+        'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept-Language': 'en,en-US;q=0.8,ja;q=0.6,zh-CN;q=0.4,zh;q=0.3'
+        //'Accept': 'application/atom+xml,application/xml,text/xml',
+        //'Referer': window.location.href,
+    };
+    obj.headers=headers;
     request(obj,getAV);
 
 
