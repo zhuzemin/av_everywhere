@@ -18,7 +18,7 @@
 // @exclude     *://*.swf
 // @exclude     *://*.pdf
 // @exclude     *://*.webm
-// @version     1.17
+// @version     1.18
 // @grant       GM_xmlhttpRequest
 // @grant         GM_registerMenuCommand
 // @grant         GM_setValue
@@ -84,7 +84,7 @@ var init = function () {
         }
         danbooru_keywordObj = GM_getValue('danbooru_keywordObj') || null;
         //current length 666
-        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<600||Object.keys(danbooru_keywordObj)[4].includes('_')) {
+        if (danbooru_keywordObj == null||Object.keys(danbooru_keywordObj).length<600||Object.keys(danbooru_keywordObj)[4].includes('_')||Object.keys(danbooru_keywordObj)[0].includes(' ')) {
             danbooru_keywordObj = {};
             create_danbooru_keywordObj();
 
@@ -6520,7 +6520,7 @@ debug('cookie: '+cookie);
 var headers={
     //'User-agent': 'Mozilla/4.0 (compatible) Greasemonkey',
     'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8',
-    'Cookie':cookie
+    'Cookie':'0=null;'+cookie
 };
         pornhubWorker(headers);
         return;
@@ -7363,13 +7363,13 @@ looking_at_viewer
 `;
     var danbooru_tag_en_arr=[];
     for(var word of danbooru_tag_en.split(/\n/)) {
-            danbooru_tag_en_arr.push(word);
+            danbooru_tag_en_arr.push(word.trim());
     }
     debug('danbooru_tag_en_arr: '+danbooru_tag_en_arr)
     for(var str of [danbooru_tag_en,danbooru_tag_cn,danbooru_tag_tw,danbooru_tag_ja]){
         var arr=str.split(/\n/);
         for(var i=0;i<arr.length;i++){
-            var key=arr[i].replace('_',' ');
+            var key=arr[i].trim().replace('_',' ');
             var value=danbooru_tag_en_arr[i];
             if(key.trim().length>0){
                 danbooru_keywordObj[key]=value;
