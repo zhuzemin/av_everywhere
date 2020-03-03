@@ -3,11 +3,13 @@
 // @name:zh-CN         av_everywhere
 // @name:zh-TW         av_everywhere
 // @name:ja        av_everywhere
+// @name:ru        av_everywhere
 // @namespace   av_everywhere
 // @supportURL  https://github.com/zhuzemin
 // @description:zh-CN  every time open web page, recommand a AV, H image, Ero manga, and Porn video to you, search base page title.
 // @description:zh-TW  every time open web page, recommand a AV, H image, Ero manga, and Porn video to you, search base page title.
 // @description:ja  every time open web page, recommand a AV, H image, Ero manga, and Porn video to you, search base page title.
+// @description:ru  every time open web page, recommand a AV, H image, Ero manga, and Porn video to you, search base page title.
 // @description every time open web page, recommand a AV, H image, Ero manga, and Porn video to you, search base page title.
 // @include     https://*
 // @include     http://*
